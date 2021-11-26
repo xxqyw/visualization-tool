@@ -9,5 +9,6 @@ export interface Point {
     details?: any;
     start?: boolean;
     end?: boolean;
+    exist?: boolean;
 }
 export default Node;

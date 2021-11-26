@@ -41,4 +41,5 @@ const nodes: Node[] = [
         start: true
     }
 ];
+export const paths = [[0, 5], [1, 5], [2, 6], [3, 6], [4, 7], [5, 7]];
 export default nodes;
