@@ -3,11 +3,17 @@ import { Node, Point } from '../../models/node';
 import cloneDeep from 'lodash/cloneDeep';
 import nodes, { paths } from '../../utils/testNodes';
 import './index.css';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 
 interface ArrowProps {
     start: number[];
     end: number[];
+}
+interface DetailProps {
+    visible: boolean;
+    detail: any;
+    title: string;
+    onCancel: () => void;
 }
 const initPoint: Point = {
     name: '',
@@ -23,30 +29,45 @@ const Arrow = (props: ArrowProps) => {
             <path d="M0,0 L0,4 L4,2 z" fill="#000" />
         </marker>
     </defs>
-    <line x1={(start[0]+1)*50} y1={(start[1]+1)*50} x2={(end[0]+1)*50} y2={(end[1]+1)*50} stroke="#000" stroke-width={2} marker-end="url(#arrow)" />
+    <line x1={(start[0]+1)*50} y1={(start[1]+1)*50} x2={(end[0]+1)*50} y2={(end[1]+1)*50} stroke="#000" strokeWidth={2} markerEnd="url(#arrow)" />
 </>
+}
+const Detail = (props: DetailProps) => {
+    const {visible, detail, title, onCancel} = props;
+    return <Modal title={title} visible={visible} footer={null} onCancel={onCancel}>{detail}</Modal>
 }
 export const SvgImage = (props: any) => {
     const [pointMap, setPointMap] = useState<any>([]);
     const [currentNodes, setCurrentNodes] = useState<number[]>([0]);
+    const [visible, setVisible] = useState<boolean>(false);
+    const [detail, setDetail] = useState<any>('');
+    const [title, setTitle] = useState<string>('');
 
     const onCompleteAllSteps = () => {
         const tempVisitedNodes = [];
         for (let i = 0; i < paths.length; i++) {
+            pointMap[paths[i][0]][paths[i][1]].route = true;
             tempVisitedNodes.push(i);
         }
         setCurrentNodes(tempVisitedNodes);
     }
     const onNextStep = () => {
         const tempVisitedNodes = cloneDeep(currentNodes);
-        tempVisitedNodes.push(tempVisitedNodes[tempVisitedNodes.length - 1] + 1);
+        tempVisitedNodes.push(tempVisitedNodes.length);
+        pointMap[paths[tempVisitedNodes.length - 1][0]][paths[tempVisitedNodes.length - 1][1]].route = true;
         setCurrentNodes(tempVisitedNodes);
     }
     const onLastStep = () => {
         const tempVisitedNodes = cloneDeep(currentNodes);
         tempVisitedNodes.pop();
+        pointMap[paths[tempVisitedNodes.length][0]][paths[tempVisitedNodes.length][1]].route = false;
         setCurrentNodes(tempVisitedNodes);
     }
+    const onShowDetail = (x: number, y: number) => {
+        setDetail(pointMap[x][y].details);
+        setTitle(pointMap[x][y].name);
+        setVisible(true);
+    };
     useEffect(() => {
         for(let i=0;i<10;i++) {
             const temp = [];
@@ -74,25 +95,30 @@ export const SvgImage = (props: any) => {
                     return line.map((point: Point, y: number) => {
                         if (point.exist) {
                             const className = point.start ? 'black' : point.end ? 'wheat' : point.route ? 'green' : 'gray';
-                            const key = x + '-' + y;
-                            return <circle className={className} id={key} key={key} cx={(x+1)*50} cy={(y+1)*50} r={15}/>
+                            return <g key={point.name} onClick={() => onShowDetail(x, y)}>
+                            <circle className={className} id={point.name} cx={(x+1)*50} cy={(y+1)*50} r={15}/>
+                            <text className='red' x={(x+1)*50-16} y={(y+1)*50+4}>{point.name}</text>
+                            </g>
                         }
                         return null;
                     })
                 })}
                 {currentNodes.map((index: number) => {
                     if (index) {
-                        return <Arrow start={paths[index - 1]} end={paths[index]}></Arrow>
+                        const keys = [...paths[index - 1], ...paths[index]];
+                        const key = keys.join('-');
+                        return <Arrow key={key} start={paths[index - 1]} end={paths[index]}></Arrow>
                     }
                     return null;
                 })}
             </svg>
         </div>
         <div>
-            <Button type="primary" onClick={onCompleteAllSteps}>一步完成</Button>
-            <Button type="primary" onClick={onLastStep} disabled={currentNodes.length <= 1}>上一步</Button>
+            <Button type="primary" onClick={onCompleteAllSteps} style={{marginRight: 16}}>一步完成</Button>
+            <Button type="primary" onClick={onLastStep} disabled={currentNodes.length <= 1} style={{marginRight: 16}}>上一步</Button>
             <Button type="primary" onClick={onNextStep} disabled={currentNodes.length >= paths.length}>下一步</Button>
         </div>
+        <Detail visible={visible} title={title} detail={detail} onCancel={() => setVisible(false)}></Detail>
     </div>);
 }
 export default SvgImage;
