@@ -1,4 +1,4 @@
-import SvgImage from "./svg-image";
+import VTPage from "./V-T";
 
-const pages = [SvgImage];
+const pages = [VTPage];
 export default pages;

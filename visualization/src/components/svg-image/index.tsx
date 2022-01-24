@@ -34,7 +34,7 @@ const Arrow = (props: ArrowProps) => {
 }
 const Detail = (props: DetailProps) => {
     const {visible, detail, title, onCancel} = props;
-    return <Modal title={title} visible={visible} footer={null} onCancel={onCancel}>{detail}</Modal>
+    return <Modal title={title} visible={visible} footer={null} onCancel={onCancel} centered>{detail}</Modal>
 }
 export const SvgImage = (props: any) => {
     const [pointMap, setPointMap] = useState<any>([]);
@@ -68,6 +68,7 @@ export const SvgImage = (props: any) => {
         setTitle(pointMap[x][y].name);
         setVisible(true);
     };
+
     useEffect(() => {
         for(let i=0;i<10;i++) {
             const temp = [];
@@ -88,7 +89,8 @@ export const SvgImage = (props: any) => {
         });
         setPointMap(cloneDeep(initPointMap));
     }, []);
-    return (<div>
+
+    return (<div style={{background: '#f0f2f5'}}>
         <div>
             <svg height={800} width={1000}>
                 {pointMap.map((line: Point[], x: number) => {
@@ -113,12 +115,12 @@ export const SvgImage = (props: any) => {
                 })}
             </svg>
         </div>
-        <div>
+        <div style={{background: '#fff', paddingTop: '16px', textAlign: 'center'}}>
             <Button type="primary" onClick={onCompleteAllSteps} style={{marginRight: 16}}>一步完成</Button>
             <Button type="primary" onClick={onLastStep} disabled={currentNodes.length <= 1} style={{marginRight: 16}}>上一步</Button>
             <Button type="primary" onClick={onNextStep} disabled={currentNodes.length >= paths.length}>下一步</Button>
         </div>
-        <Detail visible={visible} title={title} detail={detail} onCancel={() => setVisible(false)}></Detail>
+        <Detail visible={visible} title={title} detail={detail} onCancel={() => setVisible(false)} ></Detail>
     </div>);
 }
 export default SvgImage;
