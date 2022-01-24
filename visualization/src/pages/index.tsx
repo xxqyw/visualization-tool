@@ -1,4 +1,8 @@
-import VTPage from "./V-T";
+import UploadPage from "./upload-file";
+import RouteFindDetail from "./route-find-detail";
 
-const pages = [VTPage];
+const pages = {
+    RouteFindDetail,
+    UploadPage
+};
 export default pages;

@@ -12,8 +12,9 @@
 
 .App .site-layout-background {
     height: 68px;
+    background-color: #fff;
 }
-.App .site-layout .content-box {
+/* .App .site-layout .content-box {
     background-color: #fff;
     padding: 16px;
-}
+} */

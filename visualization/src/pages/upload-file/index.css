@@ -1,0 +1,8 @@
+.upload-content {
+    background-color: #fff;
+    padding: 16px;
+    height: 100%;
+}
+.upload-content .card {
+    margin: 32px 0;
+}
