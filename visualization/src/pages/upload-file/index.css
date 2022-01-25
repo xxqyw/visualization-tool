@@ -3,6 +3,16 @@
     padding: 16px;
     height: 100%;
 }
+
 .upload-content .card {
     margin: 32px 0;
+}
+
+.upload-content .card .upload-tip {
+    display: flex;
+    flex-direction: row;
+}
+
+.upload-content .card .upload-tip .upload-button {
+    margin-right: 32px;
 }

@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import { Node, Point } from '../../models/node';
 import cloneDeep from 'lodash/cloneDeep';
-import nodes, { paths } from '../../utils/testNodes';
+import nodes, { paths } from '../../testData/testNodes';
 import './index.css';
 import { Button, Modal } from 'antd';
+import { getRealStartEnd } from '../../utils/math';
 
 interface ArrowProps {
-    start: number[];
-    end: number[];
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
 }
 interface DetailProps {
     visible: boolean;
@@ -22,14 +25,15 @@ const initPoint: Point = {
 const initPointMap: any = [];
 
 const Arrow = (props: ArrowProps) => {
-    const {start, end} = props;
+    const {x1, y1, x2, y2} = props;
+
     return <>
         <defs>
         <marker id="arrow" markerWidth={10} markerHeight={10} refX={0} refY={2} orient="auto" markerUnits="strokeWidth">
             <path d="M0,0 L0,4 L4,2 z" fill="#000" />
         </marker>
     </defs>
-    <line x1={(start[0]+1)*50} y1={(start[1]+1)*50} x2={(end[0]+1)*50} y2={(end[1]+1)*50} stroke="#000" strokeWidth={2} markerEnd="url(#arrow)" />
+    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#000" strokeWidth={2} markerEnd="url(#arrow)" />
 </>
 }
 const Detail = (props: DetailProps) => {
@@ -99,7 +103,7 @@ export const SvgImage = (props: any) => {
                             const className = point.start ? 'black' : point.end ? 'wheat' : point.route ? 'green' : 'gray';
                             return <g key={point.name} onClick={() => onShowDetail(x, y)}>
                             <circle className={className} id={point.name} cx={(x+1)*50} cy={(y+1)*50} r={15}/>
-                            <text className='red' x={(x+1)*50-16} y={(y+1)*50+4}>{point.name}</text>
+                            <text className='red' x={(x+1)*50-8} y={(y+1)*50+4}>{point.name}</text>
                             </g>
                         }
                         return null;
@@ -109,7 +113,13 @@ export const SvgImage = (props: any) => {
                     if (index) {
                         const keys = [...paths[index - 1], ...paths[index]];
                         const key = keys.join('-');
-                        return <Arrow key={key} start={paths[index - 1]} end={paths[index]}></Arrow>
+                        const realIndex = getRealStartEnd((paths[index - 1][0] + 1) * 50, (paths[index - 1][1] + 1) * 50, (paths[index][0] + 1) * 50, (paths[index][1] + 1) * 50, 15, 6);
+                        return <Arrow key={key}
+                        x1={realIndex.x1}
+                        y1={realIndex.y1}
+                        x2={realIndex.x2}
+                        y2={realIndex.y2}
+                        ></Arrow>
                     }
                     return null;
                 })}

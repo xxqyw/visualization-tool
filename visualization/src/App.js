@@ -7,27 +7,21 @@ import pages from './pages';
 const { Header, Content, Footer, Sider } = Layout;
 
 function App() {
-  const [collapsed, setCollapsed] = useState(false);
-  const onCollapse = collapsed => {
-    setCollapsed(collapsed);
-  };
-  
-  const Extra = () =><h3>Extra</h3>;
   
   return (
     <div className="App">
     <Router>
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+        <Sider>
           <div className="logo">
-            V-T
+            路由可视化
           </div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
-              <Link to="/V-T">V-T</Link>
+              <Link to="/V-T">可视化工具</Link>
             </Menu.Item>
             <Menu.Item key="2">
-              <Link to="/extra">extra</Link>
+              <Link to="/example">样例</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -38,12 +32,11 @@ function App() {
               <Switch>
                 <Route path="/V-T/route-find-detail" component={pages.RouteFindDetail} />
                 <Route path="/V-T" component={pages.UploadPage} />
-                <Route path="/extra" component={Extra} />
+                <Route path="/example" component={pages.RouteFindDetail} />
                 <Route path="*" component={pages.UploadPage} />
               </Switch>
             </div>
           </Content>
-          {/* <Footer style={{ textAlign: 'center' }}>V-T ©2022 Created by xxq</Footer> */}
         </Layout>
       </Layout>
       </Router>
