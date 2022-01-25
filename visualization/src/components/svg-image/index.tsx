@@ -3,7 +3,7 @@ import { Node, Point } from '../../models/node';
 import cloneDeep from 'lodash/cloneDeep';
 import nodes, { paths } from '../../testData/testNodes';
 import './index.css';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Switch } from 'antd';
 import { getRealStartEnd } from '../../utils/math';
 
 interface ArrowProps {
@@ -46,6 +46,7 @@ export const SvgImage = (props: any) => {
     const [visible, setVisible] = useState<boolean>(false);
     const [detail, setDetail] = useState<any>('');
     const [title, setTitle] = useState<string>('');
+    const [showNodeName, setShowNodeName] = useState(true);
 
     const onCompleteAllSteps = () => {
         const tempVisitedNodes = [];
@@ -103,7 +104,7 @@ export const SvgImage = (props: any) => {
                             const className = point.start ? 'black' : point.end ? 'wheat' : point.route ? 'green' : 'gray';
                             return <g key={point.name} onClick={() => onShowDetail(x, y)}>
                             <circle className={className} id={point.name} cx={(x+1)*50} cy={(y+1)*50} r={15}/>
-                            <text className='red' x={(x+1)*50-8} y={(y+1)*50+4}>{point.name}</text>
+                            {showNodeName ? <text className='red' x={(x+1)*50-8} y={(y+1)*50+4}>{point.name}</text> : null}
                             </g>
                         }
                         return null;
@@ -126,6 +127,7 @@ export const SvgImage = (props: any) => {
             </svg>
         </div>
         <div style={{background: '#fff', paddingTop: '16px', textAlign: 'center'}}>
+            <Switch defaultChecked onChange={setShowNodeName} checkedChildren="展示节点名" unCheckedChildren="隐藏节点名" style={{marginRight: 16}} />
             <Button type="primary" onClick={onCompleteAllSteps} style={{marginRight: 16}}>一步完成</Button>
             <Button type="primary" onClick={onLastStep} disabled={currentNodes.length <= 1} style={{marginRight: 16}}>上一步</Button>
             <Button type="primary" onClick={onNextStep} disabled={currentNodes.length >= paths.length}>下一步</Button>
